@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("dagger.hilt.android.plugin")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -39,8 +41,19 @@ android {
     }
 }
 
-dependencies {
+// 🔴 1️⃣ Apply Exclusion Globally for All Configurations
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")  // Exclude old annotations
+}
 
+// 🔵 2️⃣ Force a Single Version for Annotations
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains:annotations:26.0.2")  // Ensure all use the latest version
+    }
+}
+
+dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -49,36 +62,25 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.com.google.dagger.hilt.android.gradle.plugin)
-    implementation(libs.com.google.devtools.ksp.gradle.plugin)
-    implementation(libs.androidx.hilt.common)
-    implementation(libs.androidx.hilt.navigation.fragment)
-    implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.constraint.layout)
-    implementation(libs.sdkcoroutines)
-    implementation(libs.androidx.hilt.compiler)
-    implementation(libs.androidx.hilt.lifecycle.viewmodel)
-    implementation(libs.compose.theme.adapter.x)
-    implementation(libs.material3)
-    implementation(libs.ui)
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.hilt.android.compiler)
-    implementation(libs.hilt.android)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.ui.graphics)
-    implementation(libs.retrofit)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.converter.gson)
+    implementation(libs.retrofit)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     implementation(libs.timber)
-    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.coil)
-    implementation(libs.accompanist.coil)
-    implementation(libs.androidx.palette)
+    implementation(libs.coil.compose)
     implementation(libs.androidx.palette.ktx)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.com.google.devtools.ksp.gradle.plugin)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -86,4 +88,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    implementation(libs.androidx.appcompat)
 }
